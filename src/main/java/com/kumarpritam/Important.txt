@@ -1,0 +1,20 @@
+// checking existence of workflow
+{
+    WorkflowExecutionStatus status;
+            WorkflowExecution execution = WorkflowExecution.newBuilder().setWorkflowId(subscriptionId).build();
+            DescribeWorkflowExecutionRequest request = DescribeWorkflowExecutionRequest.newBuilder().setNamespace("default").setExecution(execution) .build();
+            try {
+                DescribeWorkflowExecutionResponse describeWorkflowExecutionResponse = serviceStubs.blockingStub().describeWorkflowExecution(request);
+                status = describeWorkflowExecutionResponse.getWorkflowExecutionInfo().getStatus();
+            } catch (StatusRuntimeException statusRuntimeException){
+                System.out.println("got exception while checking status for workflow " + subscriptionId + " :: error is :: " + statusRuntimeException.getStatus());
+                status = WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_COMPLETED;
+                System.out.println("Status is " + String.valueOf(statusRuntimeException.getStatus()));
+                if(!"NOT_FOUND".equalsIgnoreCase(String.valueOf(statusRuntimeException.getStatus().getCode())))
+                    throw statusRuntimeException;
+            }
+            System.out.println("status is {}" + status);
+            if(status == WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_RUNNING)
+                throw new SubscriptionValidationException(ErrorCode.ACTIVE_SUBSCRIPTION_FOUND, "Active subscription found for " + subscriptionId);*/
+            //String workFlowId = Shared.WORKFLOW_PREFIX_ID + " " + subscriptionId;
+        }
